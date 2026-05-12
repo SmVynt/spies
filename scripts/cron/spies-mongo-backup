@@ -1,0 +1,15 @@
+# Mongo backup for Party Spies (docker compose).
+#
+# Prefer: ./scripts/deploy.sh install-cron   (writes this path automatically; needs sudo).
+#
+# Manual install on Debian/Ubuntu:
+#   1) Edit the path in the job line: replace /opt/spies with your repo’s absolute path.
+#   2) sudo touch /var/log/spies-mongo-backup.log
+#   3) sudo cp scripts/cron/spies-mongo-backup /etc/cron.d/spies-mongo-backup
+#   4) sudo chmod 644 /etc/cron.d/spies-mongo-backup
+#
+# m h dom mon dow user command
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+SHELL=/bin/sh
+
+0 3 * * * root cd /opt/spies && ./scripts/backup-mongo.sh >> /var/log/spies-mongo-backup.log 2>&1
