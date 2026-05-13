@@ -254,12 +254,56 @@ Then connect with:
 ssh spies-hetzner
 ```
 
-### 5. Install the app
+### 5. GitHub access on the server
+
+GitHub does **not** accept your account password for `git clone` / `git pull`. Use an **SSH key on the server** (separate from the key you use to SSH into Hetzner).
+
+On the server:
+
+```bash
+ssh-keygen -t ed25519 -C "hetzner-github" -f ~/.ssh/github_deploy -N ""
+cat ~/.ssh/github_deploy.pub
+```
+
+Add the printed line in GitHub → **Settings** → **SSH and GPG keys** → **New SSH key** (or add as a read-only **Deploy key** on each private repo).
+
+```bash
+mkdir -p ~/.ssh
+chmod 700 ~/.ssh
+cat >> ~/.ssh/config <<'EOF'
+Host github.com
+  HostName github.com
+  User git
+  IdentityFile ~/.ssh/github_deploy
+  IdentitiesOnly yes
+EOF
+chmod 600 ~/.ssh/config
+ssh -T git@github.com
+```
+
+Submodule URLs in this repo use SSH (`git@github.com:...`). Clone with SSH, not HTTPS:
 
 ```bash
 mkdir -p /opt/spies
 cd /opt/spies
-git clone --recurse-submodules https://github.com/SmVynt/spies
+git clone --recurse-submodules git@github.com:SmVynt/spies.git .
+```
+
+If you already cloned the parent repo but submodules failed with `Username for 'https://github.com'`, either pull the latest `.gitmodules` (SSH URLs) or on the server run:
+
+```bash
+git config --global url."git@github.com:".insteadOf "https://github.com/"
+cd /opt/spies
+git submodule sync --recursive
+git submodule update --init --recursive
+```
+
+### 6. Install the app
+
+If the repo is not cloned yet, see step 5. Otherwise:
+
+```bash
+cd /opt/spies
 cp .env.example .env
 nano .env   # set JWT_SK and MONGO_URI=mongodb://mongo:27017/party-spies
 chmod +x scripts/deploy.sh scripts/backup-mongo.sh
@@ -273,7 +317,7 @@ Verify:
 curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1/
 ```
 
-### 6. Firewall
+### 7. Firewall
 
 ```bash
 ufw allow OpenSSH
@@ -284,14 +328,14 @@ ufw enable
 
 You can also attach a [Hetzner Cloud Firewall](https://docs.hetzner.com/cloud/firewalls/overview/) allowing the same ports.
 
-### 7. Domain and HTTPS (optional)
+### 8. Domain and HTTPS (optional)
 
 1. Point your domain’s **A record** to the server IPv4.
 2. Terminate TLS on the host (Caddy, nginx + Certbot, etc.) and proxy to `127.0.0.1:80`, **or** extend the frontend/nginx setup to handle certificates.
 
 The Compose frontend already proxies `/api/` and `/socket.io/` to the backend; you only need TLS at the edge.
 
-### 8. Scheduled Mongo backups
+### 9. Scheduled Mongo backups
 
 With local Compose Mongo:
 
