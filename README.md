@@ -149,7 +149,96 @@ Mongo data lives in the Docker volume `mongo_data`. `docker compose down` does *
 docker compose down -v   # destructive: deletes mongo_data
 ```
 
-## Deploy on Hetzner (or any Linux VPS)
+### Access MongoDB
+
+MongoDB runs **inside Docker only** — `docker-compose.yml` does not publish port `27017` on the host. That is intentional: only the `backend` service talks to `mongo` on the internal network.
+
+All commands below are from the **repo root** (e.g. `/opt/spies` on the server).
+
+#### Check that Mongo is running
+
+```bash
+./scripts/deploy.sh ps
+```
+
+The `mongo` service should be **running** and **healthy**.
+
+#### Open a MongoDB shell
+
+Interactive:
+
+```bash
+docker compose exec -it mongo mongosh
+```
+
+Non-interactive:
+
+```bash
+docker compose exec -T mongo mongosh --quiet
+```
+
+Default database name (from `.env.example`) is `party-spies`. In `mongosh`:
+
+```javascript
+use party-spies
+show collections
+db.rooms.find().limit(5).pretty()
+db.rooms.countDocuments()
+```
+
+Exit with `exit` or `Ctrl+D`.
+
+If your `MONGO_URI` uses a different database name, use that instead of `party-spies` (the segment after the last `/`, before any `?`).
+
+#### One-liner queries
+
+```bash
+docker compose exec -T mongo mongosh party-spies --eval 'db.getCollectionNames()'
+docker compose exec -T mongo mongosh party-spies --eval 'db.rooms.countDocuments()'
+```
+
+#### Other ways to verify the database
+
+| Method | Command |
+|--------|---------|
+| Backend connected | `docker compose logs backend` — look for `Successfully connected!` |
+| Manual backup | `./scripts/backup-mongo.sh` — writes `backups/mongo-*.archive.gz` |
+| Data volume | `docker volume inspect spies_mongo_data` (project prefix may vary) |
+
+#### Access from your laptop (optional)
+
+Not enabled by default. For a GUI (e.g. MongoDB Compass), use an **SSH tunnel** — do **not** expose `27017` on the public internet.
+
+On your computer:
+
+```bash
+ssh -L 27017:127.0.0.1:27017 root@YOUR_SERVER_IP
+```
+
+On the server, temporarily bind Mongo to localhost only — add under `mongo` in `docker-compose.yml`:
+
+```yaml
+ports:
+  - "127.0.0.1:27017:27017"
+```
+
+Then restart the stack (`./scripts/deploy.sh up`). In Compass on your laptop, connect to:
+
+```text
+mongodb://127.0.0.1:27017/party-spies
+```
+
+Remove the `ports` mapping when you are done, or leave it bound to `127.0.0.1` only.
+
+#### If `mongosh` fails
+
+```bash
+docker compose logs mongo
+docker compose ps mongo
+```
+
+Common causes: stack not running (`./scripts/deploy.sh up`), `mongo` still starting (wait for healthy), wrong database name in `MONGO_URI`.
+
 
 ### 1. Generate an SSH key (on your computer)
 
