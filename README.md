@@ -259,7 +259,7 @@ ssh spies-hetzner
 ```bash
 mkdir -p /opt/spies
 cd /opt/spies
-git clone --recurse-submodules YOUR_REPO_URL .
+git clone --recurse-submodules https://github.com/SmVynt/spies
 cp .env.example .env
 nano .env   # set JWT_SK and MONGO_URI=mongodb://mongo:27017/party-spies
 chmod +x scripts/deploy.sh scripts/backup-mongo.sh
