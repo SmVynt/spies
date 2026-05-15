@@ -287,12 +287,6 @@ From your computer (use `-i` if you used a non-default key file):
 ssh -i ~/.ssh/hetzner_spies root@YOUR_SERVER_IP
 ```
 
-If you used the default `~/.ssh/id_ed25519`:
-
-```bash
-ssh root@YOUR_SERVER_IP
-```
-
 First connection may ask to confirm the host fingerprint — type `yes`.
 
 On the server:
@@ -446,9 +440,7 @@ Workflow [`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on pushes a
 1. **Frontend** — `npm ci`, `npm run lint`, `npm run build`
 2. **Backend** — `npm ci`, `node --check` on all project `.js` files
 3. **Docker** — `docker compose build` (uses dummy `JWT_SK` only for Compose interpolation)
-4. **Deploy** (only on **`push`** to **`main`**, and only after the steps above succeed): SSH into your Hetzner box, then:
-   - `git pull`
-   - `./scripts/deploy.sh redeploy` → `docker compose down`, then `docker compose up -d --build --remove-orphans` (Mongo **named volume** `mongo_data` is kept)
+4. **Deploy** (only on **`push`** to **`main`**, and only after the steps above succeed): SSH into your Hetzner box, then [`scripts/git-sync-for-deploy.sh`](scripts/git-sync-for-deploy.sh) (`git fetch`, `reset --hard` to `origin/main`, `git clean -fd`), then `./scripts/deploy.sh redeploy` → `docker compose down`, then `docker compose up -d --build --remove-orphans` (Mongo **named volume** `mongo_data` is kept). Ignored paths like **`.env`** and **`backups/`** are left as-is (`git clean` without `-x`).
 
 Deploy runs by default once `DEPLOY_HOST`, `DEPLOY_USER`, `DEPLOY_SSH_KEY`, and variable `DEPLOY_PATH` are set. To **disable** automatic deploys without removing secrets, set repository variable **`DEPLOY_ENABLED`** to `false`.
 
@@ -466,7 +458,7 @@ Deploy runs by default once `DEPLOY_HOST`, `DEPLOY_USER`, `DEPLOY_SSH_KEY`, and 
 | Variable | `DEPLOY_PATH` | Absolute path to the clone on the server (e.g. `/opt/spies`) |
 | Variable | `DEPLOY_ENABLED` | Optional: set to `false` to skip the automatic deploy job on `main` |
 
-The server must already have Docker, a root **`.env`**, and a clone of this repo that the key can `git pull` (SSH access to GitHub from the server is unchanged).
+The server must already have Docker, a root **`.env`**, and a clone of this repo that the key can `git fetch` from (SSH access to GitHub from the server is unchanged).
 
 SSH uses the default port **22**. For another port, extend the workflow with the `port` input on [`appleboy/ssh-action`](https://github.com/appleboy/ssh-action).
 
@@ -540,8 +532,9 @@ spies/
 ├── docker-compose.yml      # mongo, backend, frontend
 ├── .env.example            # template for root .env
 ├── scripts/
-│   ├── deploy.sh           # up | redeploy | down | logs | ps | pull | install-cron
-│   ├── backup-mongo.sh     # mongodump from compose mongo
+│   ├── deploy.sh               # up | redeploy | down | logs | ps | pull | install-cron
+│   ├── git-sync-for-deploy.sh  # fetch + reset --hard + clean (VPS deploy)
+│   ├── backup-mongo.sh         # mongodump from compose mongo
 │   └── cron/               # example cron.d snippet
 ├── party-spies-back/       # Express API
 └── party-spies-front/      # React + Vite SPA

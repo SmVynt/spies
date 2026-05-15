@@ -21,6 +21,6 @@ jobs:
           script: |
             set -euo pipefail
             cd "${{ vars.DEPLOY_PATH }}"
-            git pull
-            chmod +x scripts/deploy.sh scripts/backup-mongo.sh || true
+            chmod +x scripts/deploy.sh scripts/backup-mongo.sh scripts/git-sync-for-deploy.sh || true
+            ./scripts/git-sync-for-deploy.sh
             ./scripts/deploy.sh redeploy
