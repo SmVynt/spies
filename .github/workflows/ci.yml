@@ -1,0 +1,86 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  frontend:
+    name: Frontend (lint & build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: party-spies-front
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: npm
+          cache-dependency-path: party-spies-front/package-lock.json
+
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+
+  backend:
+    name: Backend (install & syntax)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: party-spies-back
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: npm
+          cache-dependency-path: party-spies-back/package-lock.json
+
+      - run: npm ci
+      - name: Syntax check (Node)
+        run: find . -name '*.js' -not -path './node_modules/*' -exec node --check {} \;
+
+  docker:
+    name: Docker Compose build
+    runs-on: ubuntu-latest
+    needs: [frontend, backend]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build service images
+        env:
+          JWT_SK: ci-placeholder-not-for-production
+          MONGO_URI: mongodb://mongo:27017/party-spies
+        run: docker compose build
+
+  deploy:
+    name: Deploy to Hetzner
+    runs-on: ubuntu-latest
+    needs: [docker]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.DEPLOY_ENABLED != 'false'
+    concurrency:
+      group: hetzner-deploy
+      cancel-in-progress: false
+
+    steps:
+      - name: SSH — pull, rebuild, recreate containers
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            set -euo pipefail
+            cd "${{ vars.DEPLOY_PATH }}"
+            git pull
+            chmod +x scripts/deploy.sh scripts/backup-mongo.sh || true
+            ./scripts/deploy.sh redeploy

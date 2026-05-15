@@ -20,8 +20,6 @@ frontend (nginx:80) ── /api/*, /socket.io/* ──► backend (Node:5000)
 | **backend** | `party-spies-back/` | REST API (`/api/rooms/*`), WebSockets |
 | **frontend** | `party-spies-front/` | Static SPA; nginx proxies API and Socket.IO to backend |
 
-Backend and frontend live as **normal directories** in this repository (vendored / copied code), not as nested Git repositories.
-
 ## Prerequisites
 
 **Production (recommended)**
@@ -103,6 +101,7 @@ Open the app:
 ./scripts/deploy.sh logs        # all logs (follow)
 ./scripts/deploy.sh logs backend
 ./scripts/deploy.sh down        # stop and remove containers (keeps mongo volume)
+./scripts/deploy.sh redeploy    # down, rebuild images, up --remove-orphans (CI/CD)
 ./scripts/deploy.sh pull        # pull base images (mongo, node, nginx)
 ```
 
@@ -438,6 +437,39 @@ gunzip -c backups/mongo-party-spies-YYYYMMDD-HHMMSS.archive.gz \
 
 Adjust the filename and database name as needed. `--drop` replaces existing collections in the target DB.
 
+## CI/CD (GitHub Actions)
+
+### Continuous integration + automatic deploy
+
+Workflow [`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on pushes and pull requests to `main`:
+
+1. **Frontend** — `npm ci`, `npm run lint`, `npm run build`
+2. **Backend** — `npm ci`, `node --check` on all project `.js` files
+3. **Docker** — `docker compose build` (uses dummy `JWT_SK` only for Compose interpolation)
+4. **Deploy** (only on **`push`** to **`main`**, and only after the steps above succeed): SSH into your Hetzner box, then:
+   - `git pull`
+   - `./scripts/deploy.sh redeploy` → `docker compose down`, then `docker compose up -d --build --remove-orphans` (Mongo **named volume** `mongo_data` is kept)
+
+Deploy runs by default once `DEPLOY_HOST`, `DEPLOY_USER`, `DEPLOY_SSH_KEY`, and variable `DEPLOY_PATH` are set. To **disable** automatic deploys without removing secrets, set repository variable **`DEPLOY_ENABLED`** to `false`.
+
+### Manual deploy workflow
+
+[`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) is **manual only** (Actions → **Deploy** → **Run workflow**). It runs the same SSH script as step 4 (no need to set `DEPLOY_ENABLED`).
+
+### GitHub configuration
+
+| Kind | Name | Purpose |
+|------|------|---------|
+| Secret | `DEPLOY_HOST` | Server hostname or IP |
+| Secret | `DEPLOY_USER` | SSH user (e.g. `root` or deploy user) |
+| Secret | `DEPLOY_SSH_KEY` | Private key (PEM) for that user — paste full key including `BEGIN`/`END` lines |
+| Variable | `DEPLOY_PATH` | Absolute path to the clone on the server (e.g. `/opt/spies`) |
+| Variable | `DEPLOY_ENABLED` | Optional: set to `false` to skip the automatic deploy job on `main` |
+
+The server must already have Docker, a root **`.env`**, and a clone of this repo that the key can `git pull` (SSH access to GitHub from the server is unchanged).
+
+SSH uses the default port **22**. For another port, extend the workflow with the `port` input on [`appleboy/ssh-action`](https://github.com/appleboy/ssh-action).
+
 ## Local development
 
 ### Option A: Full stack in Docker (closest to production)
@@ -503,10 +535,12 @@ node loadTasks.js
 
 ```text
 spies/
+├── .github/
+│   └── workflows/         # CI + post-push Hetzner deploy (optional)
 ├── docker-compose.yml      # mongo, backend, frontend
 ├── .env.example            # template for root .env
 ├── scripts/
-│   ├── deploy.sh           # up | down | logs | ps | pull | install-cron
+│   ├── deploy.sh           # up | redeploy | down | logs | ps | pull | install-cron
 │   ├── backup-mongo.sh     # mongodump from compose mongo
 │   └── cron/               # example cron.d snippet
 ├── party-spies-back/       # Express API
