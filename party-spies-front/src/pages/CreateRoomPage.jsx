@@ -1,9 +1,8 @@
 //import React from 'react'
 import Menu_button from "../components/Menu_button"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useNavigate } from "react-router-dom";
 import receiveInitialData from "../functions/receiveInitialData";
-import Button from "../components/Button";
 import { useTranslation } from 'react-i18next';
 import ButtonSubmit from "../components/ButtonSubmit";
 import Alreadyin from "../components/AlreadyIn";
@@ -12,12 +11,12 @@ const CreateRoom = () => {
 
   const {t} =useTranslation();
 
-  const [maxTasksPerUser, setMaxTasksPerUser] = useState('8');
-  const [tasksPerUser, setTasksPerUser] = useState('4');
+  const maxTasksPerUser = '8';
+  const tasksPerUser = '4';
+  const pack = '1';
   const [duration, setDuration] = useState("240");
   const [language, setLanguage] = useState(localStorage.getItem("i18nextLng"));
   const [message, setMessage] = useState ('');
-  const [pack, setPack] = useState ('1');
   const [hostUsername, setHostUsername] = useState("Spymaster");
   const navigate = useNavigate();
 

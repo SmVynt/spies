@@ -4,7 +4,6 @@ import { useState,useEffect } from "react"
 import { useNavigate, useParams } from "react-router-dom";
 import receiveInitialData from "../functions/receiveInitialData";
 import { useTranslation } from "react-i18next";
-import Button from "../components/Button";
 import ButtonSubmit from "../components/ButtonSubmit";
 import Alreadyin from "../components/AlreadyIn";
 

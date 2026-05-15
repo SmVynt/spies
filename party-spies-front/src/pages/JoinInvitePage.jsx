@@ -2,7 +2,6 @@ import JoinRoom from "./JoinRoomPage";
 import Invite from "./InvitePage";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { useTranslation } from 'react-i18next';
 
 const JoinInvite = () => {
 
@@ -11,6 +10,11 @@ const JoinInvite = () => {
     const {id} = useParams();
 
     useEffect(() => {
+        if (id == null || id === '') {
+            setLoggedIn(false);
+            setLoading(false);
+            return;
+        }
 
         const verify = async () => {
             try {
@@ -51,7 +55,7 @@ const JoinInvite = () => {
 
     verify();
 
-  }, [])
+  }, [id])
 
 
 

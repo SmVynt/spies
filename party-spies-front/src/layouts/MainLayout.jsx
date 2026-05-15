@@ -4,7 +4,6 @@ import Navbar from "../components/Navbar"
 import BigSpy from "../assets/images/spy-big.svg";
 import SmallSpy from "../assets/images/spy-small.svg";
 import MediumSpy from "../assets/images/spy-medium.svg";
-import Footer from "../components/Footer";
 import FooterFixed from "../components/FooterFixed";
 
 const MainLayout = () => {
