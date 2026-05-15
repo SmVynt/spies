@@ -1,0 +1,119 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body{
+    margin:0;
+    padding:0;
+    background: linear-gradient(to bottom, rgba(160,20,170,1) 0%, rgba(219,20,166,1) 25%, rgba(255,85,177,1) 100%), rgba(255,85,177,1);
+    background-repeat: no-repeat;
+    background-size: 100%;
+    
+    overflow-x: hidden;
+}
+
+.scroll-fix {
+    right: calc(0px - (100vw - 100%));
+}
+
+.small-spy {
+    position:absolute;
+    left:1%;
+    bottom: -7%;
+    height: 25%;
+    z-index: -52;
+}
+
+.medium-spy {
+    min-width: 150%;
+}
+
+.menu-button {
+    cursor: pointer;
+    background-size:contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.menu-bg-1 {
+    background-image: url(assets/images/ui/menu-bg-vec-01.svg);
+}
+
+.menu-bg-2 {
+    background-image: url(assets/images/ui/menu-bg-vec-02.svg);
+}
+
+.menu-bg-3 {
+    background-image: url(assets/images/ui/menu-bg-vec-03.svg);
+}
+
+.menu-bg-4 {
+    background-image: url(assets/images/ui/menu-bg-vec-04.svg);
+}
+
+::selection{
+    background:#220A2E;
+}
+/*
+#cta {
+    background-image: url(assets/images/bg-simplify-section-desktop.svg);
+    background-repeat: no-repeat;
+}
+/*
+@media (max-width: 576px) {
+    body{
+        background-position: 50px -50px;
+        background-size: 500px;
+    }
+
+    #cta{
+        background-image: url(assets/images/bg-simplify-section-mobile.svg);
+    }
+}
+
+.hamburger {
+    cursor:pointer;
+    width: 24px;
+    height: 24px;
+    transition: all 0.25s;
+    position: relative;
+}
+/*
+.hamburger-top,
+.hamburger-middle,
+.hamburger-bottom {
+    position: absolute;
+    top:0;
+    left:0;
+    width: 24px;
+    height: 2px;
+    background: black;
+    transform: rotate(0);
+    transition: 0.5s;
+}
+/*
+.hamburger-middle {
+    transform: translateY(7px);
+}
+
+.hamburger-bottom {
+    transform: translateY(14px);
+}
+
+.open {
+    transform: rotate(90deg);
+    transform: translateY(0px);
+}
+
+.open .hamburger-top {
+    transform: rotate(45deg) translateY(6px) translate(6px);
+}
+
+.open .hamburger-middle {
+    display: none;
+}
+
+.open .hamburger-bottom {
+    transform: rotate(-45deg) translateY(6px) translate(-6px);
+}
+*/
