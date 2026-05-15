@@ -20,10 +20,7 @@ frontend (nginx:80) ── /api/*, /socket.io/* ──► backend (Node:5000)
 | **backend** | `party-spies-back/` | REST API (`/api/rooms/*`), WebSockets |
 | **frontend** | `party-spies-front/` | Static SPA; nginx proxies API and Socket.IO to backend |
 
-Git submodules:
-
-- `party-spies-front` — https://github.com/SmVynt/party-spies-front.git
-- `party-spies-back` — https://github.com/SmVynt/party-spies-back.git
+Backend and frontend live as **normal directories** in this repository (vendored / copied code), not as nested Git repositories.
 
 ## Prerequisites
 
@@ -39,23 +36,9 @@ Git submodules:
 
 ## Get the code
 
-Clone with submodules:
-
 ```bash
-git clone --recurse-submodules https://github.com/YOUR_ORG/spies.git
+git clone https://github.com/SmVynt/spies.git
 cd spies
-```
-
-If you already cloned without submodules:
-
-```bash
-git submodule update --init --recursive
-```
-
-Update submodules later:
-
-```bash
-git submodule update --remote --merge
 ```
 
 ## Configuration
@@ -135,7 +118,6 @@ docker compose down
 
 ```bash
 git pull
-git submodule update --remote --merge
 ./scripts/deploy.sh up
 ```
 
@@ -354,7 +336,7 @@ ssh-keygen -t ed25519 -C "hetzner-github" -f ~/.ssh/github_deploy -N ""
 cat ~/.ssh/github_deploy.pub
 ```
 
-Add the printed line in GitHub → **Settings** → **SSH and GPG keys** → **New SSH key** (or add as a read-only **Deploy key** on each private repo).
+Add the printed line in GitHub → **Settings** → **SSH and GPG keys** → **New SSH key** (or add as a read-only **Deploy key** on this repository, if it is private).
 
 ```bash
 mkdir -p ~/.ssh
@@ -370,21 +352,18 @@ chmod 600 ~/.ssh/config
 ssh -T git@github.com
 ```
 
-Submodule URLs in this repo use SSH (`git@github.com:...`). Clone with SSH, not HTTPS:
+Clone this repo over SSH (use your fork or org URL):
 
 ```bash
 mkdir -p /opt/spies
 cd /opt/spies
-git clone --recurse-submodules git@github.com:SmVynt/spies.git .
+git clone git@github.com:SmVynt/spies.git .
 ```
 
-If you already cloned the parent repo but submodules failed with `Username for 'https://github.com'`, either pull the latest `.gitmodules` (SSH URLs) or on the server run:
+If the repository is **private**, the server needs a GitHub SSH key that can read it (steps above). For a **public** repo you can use HTTPS instead:
 
 ```bash
-git config --global url."git@github.com:".insteadOf "https://github.com/"
-cd /opt/spies
-git submodule sync --recursive
-git submodule update --init --recursive
+git clone https://github.com/SmVynt/spies.git .
 ```
 
 ### 6. Install the app
@@ -530,8 +509,8 @@ spies/
 │   ├── deploy.sh           # up | down | logs | ps | pull | install-cron
 │   ├── backup-mongo.sh     # mongodump from compose mongo
 │   └── cron/               # example cron.d snippet
-├── party-spies-back/       # Express API (submodule)
-└── party-spies-front/      # React + Vite SPA (submodule)
+├── party-spies-back/       # Express API
+└── party-spies-front/      # React + Vite SPA
 ```
 
 ## Troubleshooting
@@ -543,7 +522,6 @@ spies/
 | Site loads but API fails | `docker compose logs backend`; nginx proxies `/api/` to `backend:5000` |
 | Port 80 in use | Set `HTTP_PORT=8080` in `.env` and reopen on that port |
 | Backup skips | Stack must be up; backup script uses `docker compose exec mongo` |
-| Submodule dirs empty | `git submodule update --init --recursive` |
 
 Useful commands:
 
@@ -563,4 +541,4 @@ docker compose exec mongo mongosh party-spies --eval 'db.rooms.countDocuments()'
 
 ## License
 
-See submodule repositories for frontend/backend licensing if applicable.
+See the repository (or add a `LICENSE` file) for terms.

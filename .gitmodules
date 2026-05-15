@@ -1,6 +1,0 @@
-[submodule "party-spies-front"]
-	path = party-spies-front
-	url = git@github.com:SmVynt/party-spies-front.git
-[submodule "party-spies-back"]
-	path = party-spies-back
-	url = git@github.com:SmVynt/party-spies-back.git
