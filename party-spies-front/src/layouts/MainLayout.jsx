@@ -18,7 +18,7 @@ const MainLayout = () => {
                 <Outlet/>
             </div>
 
-            <img src={BigSpy} alt="" className="fixed -bottom-8 scroll-fix overflow-hidden max-w-75pc max-h-full -z-40 hidden md:block"/>
+            <img src={BigSpy} alt="" className="fixed -bottom-8 scroll-fix overflow-hidden max-w-75pc max-h-[100svh] -z-40 hidden md:block"/>
             <img src={SmallSpy} alt="" className="fixed -bottom-8 left-4 max-w-1/6 -z-50 overflow-hidden hidden md:block"/>
             {/* 
             <img src={MediumSpy} alt="" className="fixed bottom-0 -left-0 -z-30 w-auto h-auto min-w-max overflow-hidden block md:hidden"/>

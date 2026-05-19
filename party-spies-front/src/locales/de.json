@@ -52,6 +52,9 @@
     "wrong text_01": "Entschuldigung. Es sieht so aus, als ob du versuchst, einen Raum zu betreten, der nicht existiert. Oder du bist noch nicht beigetreten.",
     "wrong text_02": "Bitte erstelle einen Raum oder tritt bei, um zu spielen.",
 
+    "about create room": "Erstelle einen Raum",
+    "about play": "Spiele",
+    "about win": "Gewinne",
     "about welcome": "Willkommen bei Party Spies! Deine Aufgabe ist es, geheime Missionen zu erfüllen, ohne bemerkt zu werden. Der Gewinner ist derjenige, der die meisten Aufgaben erfolgreich erledigt, während er unauffällig bleibt.",
     "about how to": "So spielt man",
     "about how to 1 title": "Erstellen eines Raums",

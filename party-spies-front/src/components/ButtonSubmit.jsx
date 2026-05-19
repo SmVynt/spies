@@ -2,7 +2,6 @@ import PropTypes from 'prop-types'
 
 const ButtonSubmit = ({title = 'Menu_01', img_id=4}) => {
 
-
   const img_class = img_id==1? 'menu-bg-1' : img_id==2? 'menu-bg-2' : img_id==3? 'menu-bg-3' : 'menu-bg-4';
 
   return (

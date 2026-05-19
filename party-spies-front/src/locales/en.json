@@ -52,6 +52,10 @@
     "wrong text_01": "Sorry. Looks like you're trying to enter the room that doesn't exist. Or you didn't yet join it.",
     "wrong text_02": "Please create the room or join in order to play.",
 
+
+    "about create room": "Create a Room",
+    "about play": "Play",
+    "about win": "Win",
     "about welcome": "Welcome to Party Spies! Your task is to complete secret missions without being noticed. The winner is the one who completes the most tasks while staying under the radar.",
     "about how to": "How to Play",
     "about how to 1 title": "Creating a Room",
