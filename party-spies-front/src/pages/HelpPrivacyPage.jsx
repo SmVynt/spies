@@ -7,7 +7,7 @@ const Privacy = () => {
   const {t} =useTranslation();
 
   return (
-    <div className="bg-spyDarkPink p-4 space-y-6 md:w-1/2">
+    <div className="bg-spyDarkPink p-4 space-y-6 page-panel">
       <h1 className="text-center text-4xl font-bold md:text-left text-spyYellow">
         Privacy policy
       </h1>

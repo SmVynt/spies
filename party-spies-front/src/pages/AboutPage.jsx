@@ -11,7 +11,7 @@ const About = () => {
   const {t} =useTranslation();
 
   return (
-    <div className="space-y-6 text-center text-white md:text-left bg-spyDarkPink p-4 md:w-1/2">
+    <div className="space-y-6 text-center text-white md:text-left bg-spyDarkPink p-4 page-panel">
       <h1 className="text-4xl font-bold text-spyYellow">
         {t("about")}
       </h1>

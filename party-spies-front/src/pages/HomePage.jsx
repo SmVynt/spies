@@ -46,7 +46,7 @@ const HomePage = () => {
   return (
     <>
       <section id='homePage'>
-          <div className="space-y-6 w-auto md:w-1/2">
+          <div className="space-y-6 page-panel">
             <h1 className="text-center text-4xl text-white font-bold md:text-left">
               {t('slogan')}
             </h1>

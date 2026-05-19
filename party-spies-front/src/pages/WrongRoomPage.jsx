@@ -10,7 +10,7 @@ const WrongRoom = () => {
   //// JOIN ROOM PAGE
 
   return (
-    <div className="space-y-8 text-center text-white w-auto md:text-left md:w-1/2">      
+    <div className="space-y-8 text-center text-white md:text-left page-panel">      
       <h1 className="text-3xl">
         {t("wrong oops")}
       </h1>

@@ -7,7 +7,7 @@ const Terms = () => {
   const {t} =useTranslation();
 
   return (
-    <div className="bg-spyDarkPink p-4 space-y-6 md:w-1/2">
+    <div className="bg-spyDarkPink p-4 space-y-6 page-panel">
       <h1 className="text-center text-4xl text-spyYellow font-bold md:text-left">
         Terms and Conditions
       </h1>

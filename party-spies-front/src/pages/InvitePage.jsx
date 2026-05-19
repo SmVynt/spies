@@ -5,7 +5,6 @@ import QRCode from "react-qr-code";
 import resolveConfig from "tailwindcss/resolveConfig";
 import tailwindConfig from "../../tailwind.config";
 import { Link } from "react-router-dom";
-import ButtonBack from "../components/ButtonBack";
 import { useTranslation } from "react-i18next";
 import { useState, useEffect } from "react";
 
@@ -73,7 +72,7 @@ const Invite = () => {
 
       <Menu_button title={t("play")} img_id={1} link='/room' />
 
-      <ButtonBack />
+      <Menu_button title={t("back")} img_id={3} link='/' />
       
     </div>
   )
