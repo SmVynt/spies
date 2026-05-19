@@ -1,0 +1,26 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: SSH deploy (manual)
+    runs-on: ubuntu-latest
+    concurrency:
+      group: hetzner-deploy
+      cancel-in-progress: false
+
+    steps:
+      - name: SSH — pull, rebuild, recreate containers
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            set -euo pipefail
+            cd "${{ vars.DEPLOY_PATH }}"
+            chmod +x scripts/deploy.sh scripts/backup-mongo.sh scripts/git-sync-for-deploy.sh || true
+            ./scripts/git-sync-for-deploy.sh
+            ./scripts/deploy.sh redeploy
