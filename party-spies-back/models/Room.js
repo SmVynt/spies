@@ -60,7 +60,8 @@ const RoomSchema = new mongoose.Schema({
     }
 });
 
-//RoomSchema.index({createdAt:1},{expiresAfterSeconds:60});
+// TTL index: MongoDB auto-deletes rooms once their expiresAt timestamp has passed.
+RoomSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
 const Room = mongoose.model('Room', RoomSchema);
 module.exports = Room;
