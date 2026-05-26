@@ -44,6 +44,22 @@ services:
     networks:
       - app
 
+  mongo-express:
+    image: mongo-express:latest
+    restart: unless-stopped
+    environment:
+      ME_CONFIG_MONGODB_URL: ${MONGO_URI:-mongodb://mongo:27017/party-spies}
+      ME_CONFIG_BASICAUTH_USERNAME: ${ME_USERNAME:-admin}
+      ME_CONFIG_BASICAUTH_PASSWORD: ${ME_PASSWORD:?Set ME_PASSWORD in .env (mongo-express web UI)}
+      ME_CONFIG_MONGODB_ENABLE_ADMIN: "true"
+    ports:
+      - "${MONGO_EXPRESS_BIND:-127.0.0.1}:${MONGO_EXPRESS_PORT:-8081}:8081"
+    depends_on:
+      mongo:
+        condition: service_healthy
+    networks:
+      - app
+
 networks:
   app:
     driver: bridge
