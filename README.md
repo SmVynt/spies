@@ -6,6 +6,18 @@ Players draw mission cards at the start of an evening and try to complete them i
 
 **Play it:** <https://partyspies.com>
 
+- [How it works](#how-it-works)
+- [Tech stack](#tech-stack)
+- [Project layout](#project-layout)
+- [Run it](#run-it-locally-docker)
+- [Self Host](#self-host-on-a-vps)
+- [Configuration](#configuration-env)
+- [Continuous deployment](#continuous-deployment)
+- [Adding a language](#adding-a-language)
+- [Contributing](#contributing)
+- [Security](#security)
+- [License](#license)
+
 ## How it works
 
 1. One player creates a room from the landing page.
@@ -35,6 +47,18 @@ Browser → nginx (80) ──/api, /socket.io──→ Node backend (5000) → M
 | backend        | `party-spies-back/`                     |
 | frontend       | `party-spies-front/` (nginx)            |
 | mongo-express  | `mongo-express:latest` (optional admin UI) |
+
+## Project layout
+
+```
+spies/
+├── docker-compose.yml
+├── .env.example
+├── .github/workflows/   ci.yml, deploy.yml
+├── scripts/             deploy.sh, backup-mongo.sh, git-sync-for-deploy.sh, cron/
+├── party-spies-back/    Node + Express + Socket.IO + Mongoose
+└── party-spies-front/   React + Vite + Tailwind + i18n (en/de/ru/es)
+```
 
 ## Run it locally (Docker)
 
@@ -180,18 +204,6 @@ To use them on your own fork, add these under **Settings → Secrets and variabl
 | Variable | `DEPLOY_ENABLED`  | Set to `false` to skip auto-deploy on push (CI still runs). |
 
 If you don't set these, CI still runs as normal and the deploy job is simply skipped.
-
-## Project layout
-
-```
-spies/
-├── docker-compose.yml
-├── .env.example
-├── .github/workflows/   ci.yml, deploy.yml
-├── scripts/             deploy.sh, backup-mongo.sh, git-sync-for-deploy.sh, cron/
-├── party-spies-back/    Node + Express + Socket.IO + Mongoose
-└── party-spies-front/   React + Vite + Tailwind + i18n (en/de/ru/es)
-```
 
 ## Adding a language
 
