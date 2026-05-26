@@ -60,6 +60,7 @@ jobs:
         env:
           JWT_SK: ci-placeholder-not-for-production
           MONGO_URI: mongodb://mongo:27017/party-spies
+          ME_PASSWORD: ci-placeholder-not-for-production
         run: docker compose build
 
   deploy:
