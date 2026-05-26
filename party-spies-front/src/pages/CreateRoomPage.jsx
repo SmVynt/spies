@@ -131,9 +131,10 @@ const CreateRoom = () => {
                 value={language}
                 onChange={(e)=> setLanguage(e.target.value)}
               > 
-                <option value="en">{t("create language en")}</option>
-                <option value="de">{t("create language de")}</option>
-                <option value="ru">{t("create language ru")}</option>
+                <option value="en">English</option>
+                <option value="de">Deutsch</option>
+                <option value="ru">Русский</option>
+                <option value="es">Español</option>
               </select>
             </div>
             

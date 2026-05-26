@@ -18,6 +18,11 @@ const About = () => {
       <p className="text-xl">
         {t('about welcome')}
       </p>
+      {t('about translation notice') ? (
+        <p className="text-lg italic border border-spyYellow/50 rounded p-3 text-spyYellow">
+          {t('about translation notice')}
+        </p>
+      ) : null}
       {/* How to */}
       <h1 className="text-4xl font-bold text-spyYellow">
         {t("about how to")}

@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const allTasksEn = require('../local-db/tasks-en');
 const allTasksRu = require('../local-db/tasks-ru');
 const allTasksDe = require('../local-db/tasks-de');
+const allTasksEs = require('../local-db/tasks-es');
 const {getTasks} = require('../utils/getTasks');
 const mongoose = require('mongoose');
 
@@ -46,6 +47,9 @@ const createRoom = async (req,res) => {
                 break;
             case 'en':
                 allTasks = allTasksEn;
+                break;
+            case 'es':
+                allTasks = allTasksEs;
                 break;
             default:
                 allTasks = allTasksEn;
